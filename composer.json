@@ -1,17 +1,16 @@
 {
-    "name": "prinsfrank/socrates",
-    "description": "ADRL cli",
+    "name": "prinsfrank/adrl-parser",
+    "description": "ADRL parser",
     "type": "library",
     "license": "MIT",
-    "bin": ["bin/socrates"],
     "autoload": {
         "psr-4": {
-            "PrinsFrank\\Socrates\\": "src/"
+            "PrinsFrank\\ADLParser\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PrinsFrank\\Socrates\\Tests\\": "tests/"
+            "PrinsFrank\\ADLParser\\Tests\\": "tests/"
         }
     },
     "require": {
