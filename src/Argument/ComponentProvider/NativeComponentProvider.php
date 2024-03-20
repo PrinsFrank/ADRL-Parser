@@ -15,7 +15,7 @@ use PrinsFrank\ADLParser\Argument\Component\Modifier\Valid;
 
 class NativeComponentProvider implements ComponentProvider
 {
-    /** @return list<string, class-string<Identity|Modifier>> */
+    /** @return array<string, class-string<Identity|Modifier>> */
     public function provide(): array
     {
         return [

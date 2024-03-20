@@ -9,7 +9,6 @@ use PrinsFrank\ADLParser\Argument\ComponentSet;
 use PrinsFrank\ADLParser\Argument\ComponentProvider\ComponentProvider;
 use PrinsFrank\ADLParser\Argument\ComponentProvider\NativeComponentProvider;
 use PrinsFrank\ADLParser\Exception\DuplicateDefinitionException;
-use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 use PrinsFrank\ADLParser\Exception\InvalidFileException;
 use PrinsFrank\ADLParser\Exception\InvalidIdentifierException;
 
@@ -25,7 +24,6 @@ class Parser
     /**
      * @throws InvalidFileException
      * @throws InvalidIdentifierException
-     * @throws InvalidComponentException
      * @throws DuplicateDefinitionException
      */
     public function parse(string $path): ComponentSet
@@ -49,7 +47,7 @@ class Parser
             }
 
             $keyword = substr($line, 0, $firstSpacePos);
-            /** @var Identity|Modifier $componentFQN */
+            /** @var class-string<Identity|Modifier> $componentFQN */
             $componentFQN = $this->componentProvider->provide()[$keyword] ?? throw new InvalidFileException('keyword "' . $keyword . '" is not supported.');
             $componentString = substr($line, strlen($keyword) + 1);
             $componentParts = explode(' ', $componentString, 2);
