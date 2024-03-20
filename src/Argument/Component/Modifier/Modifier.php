@@ -8,7 +8,7 @@ use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 interface Modifier
 {
     /** @throws InvalidComponentException */
-    public static function fromIdentifierAndContent(string $identifier, string $content): self;
+    public static function fromIdentifierAndContent(string $identifier, ?string $content): self;
 
     public function getIdentifier(): string;
 }

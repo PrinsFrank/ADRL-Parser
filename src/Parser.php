@@ -52,7 +52,9 @@ class Parser
             /** @var Identity|Modifier $componentFQN */
             $componentFQN = $this->componentProvider->provide()[$keyword] ?? throw new InvalidFileException('keyword "' . $keyword . '" is not supported.');
             $componentString = substr($line, strlen($keyword) + 1);
-            [$identifier, $content] = explode(' ', $componentString, 2);
+            $componentParts = explode(' ', $componentString, 2);
+            $identifier = $componentParts[0];
+            $content = $componentParts[1] ?? null;
             if (preg_match('/^[a-z_]{2,}$/', $identifier) === false) {
                 throw new InvalidIdentifierException($identifier);
             }

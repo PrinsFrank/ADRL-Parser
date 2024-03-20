@@ -15,9 +15,9 @@ class Argument implements Modifier
     }
 
     /** @throws InvalidIdentifierException */
-    public static function fromIdentifierAndContent(string $identifier, string $content): self
+    public static function fromIdentifierAndContent(string $identifier, ?string $content): self
     {
-        $identifiers = explode(' ', $content);
+        $identifiers = explode(' ', $content ?? '');
         foreach ($identifiers as $argumentSource) {
             if (preg_match('/^[a-z_]+$/', $argumentSource) === false) {
                 throw new InvalidIdentifierException($argumentSource);

@@ -7,9 +7,11 @@ use PrinsFrank\ADLParser\Argument\Component\Identity\Conclusion;
 use PrinsFrank\ADLParser\Argument\Component\Identity\Identity;
 use PrinsFrank\ADLParser\Argument\Component\Identity\Premise;
 use PrinsFrank\ADLParser\Argument\Component\Modifier\Argument;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\InValid;
 use PrinsFrank\ADLParser\Argument\Component\Modifier\Modifier;
-use PrinsFrank\ADLParser\Argument\Component\Modifier\Soundness;
-use PrinsFrank\ADLParser\Argument\Component\Modifier\Validity;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\Sound;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\UnSound;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\Valid;
 
 class NativeComponentProvider implements ComponentProvider
 {
@@ -20,8 +22,10 @@ class NativeComponentProvider implements ComponentProvider
             'argument' => Argument::class,
             'conclusion' => Conclusion::class,
             'premise' => Premise::class,
-            'soundness' => Soundness::class,
-            'validity' => Validity::class,
+            'sound' => Sound::class,
+            'unsound' => UnSound::class,
+            'valid' => Valid::class,
+            'invalid' => InValid::class,
         ];
     }
 }
