@@ -9,10 +9,10 @@ use PrinsFrank\ADLParser\Exception\DuplicateDefinitionException;
 
 class ComponentSet
 {
-    /** @var list<string, Identity|Modifier> */
+    /** @var list<string, Identity> */
     private array $identities = [];
 
-    /** @var list<string, list<Identity|Modifier>> */
+    /** @var list<string, list<Modifier>> */
     private array $modifiers = [];
 
     public function __construct(
@@ -41,6 +41,7 @@ class ComponentSet
         return $this->identities[$identifier] ?? null;
     }
 
+    /** @return list<Modifier> */
     public function getModifiers(string $identifier): array
     {
         return $this->modifiers[$identifier] ?? [];
