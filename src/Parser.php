@@ -12,7 +12,6 @@ use PrinsFrank\ADLParser\Context\ParserContext;
 use PrinsFrank\ADLParser\Exception\DuplicateDefinitionException;
 use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 use PrinsFrank\ADLParser\Exception\InvalidFileException;
-use PrinsFrank\ADLParser\Exception\InvalidIdentifierException;
 use Throwable;
 
 class Parser
@@ -26,7 +25,6 @@ class Parser
 
     /**
      * @throws InvalidFileException
-     * @throws InvalidIdentifierException
      * @throws DuplicateDefinitionException
      * @throws InvalidComponentException
      */
@@ -45,8 +43,12 @@ class Parser
                 continue;
             }
 
-            $buffer = ''; $keyword = $label = null; $identifiers = []; $context = ParserContext::None;
-            for ($i = 0; $i < ($characters ??= mb_strlen($line)); $i++) {
+            $buffer = '';
+            $keyword = $label = null;
+            $identifiers = [];
+            $context = ParserContext::None;
+            $nrOfCharacters = mb_strlen($line);
+            for ($i = 0; $i < $nrOfCharacters; $i++) {
                 $char = mb_substr($line, $i, 1);
                 if ($context === ParserContext::None) {
                     $context = ParserContext::Keyword;

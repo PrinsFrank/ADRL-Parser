@@ -40,13 +40,13 @@ class ComponentSetTest extends TestCase
         $componentSet = new ComponentSet('');
         static::assertSame([], $componentSet->getModifiers('bop'));
 
-        $validFoo = new Valid('foo');
+        $validFoo = new Valid('foo', null);
         $componentSet->addComponent($validFoo);
         static::assertSame([$validFoo], $componentSet->getModifiers('foo'));
 
-        $validBar = new Valid('bar');
+        $validBar = new Valid('bar', null);
         $componentSet->addComponent($validBar);
-        $soundBar = new Sound('bar');
+        $soundBar = new Sound('bar', null);
         $componentSet->addComponent($soundBar);
         static::assertSame([$validBar, $soundBar], $componentSet->getModifiers('bar'));
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace PrinsFrank\ADLParser\Argument\Component\Modifier;
 
 use PrinsFrank\ADLParser\Exception\InvalidComponentException;
-use PrinsFrank\ADLParser\Exception\InvalidIdentifierException;
 
 class Argument implements Modifier
 {
