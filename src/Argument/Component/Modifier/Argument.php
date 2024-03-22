@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PrinsFrank\ADLParser\Argument\Component\Modifier;
 
+use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 use PrinsFrank\ADLParser\Exception\InvalidIdentifierException;
 
 class Argument implements Modifier
@@ -11,20 +12,21 @@ class Argument implements Modifier
     public function __construct(
         public readonly string $identifier,
         public readonly array $identifiers,
+        public readonly string|null $label,
     ) {
     }
 
-    /** @throws InvalidIdentifierException */
-    public static function fromIdentifierAndContent(string $identifier, ?string $content): self
+    /**
+     * @param list<string> $identifiers
+     * @throws InvalidComponentException
+     */
+    public static function fromSet(array $identifiers, ?string $label): self
     {
-        $identifiers = explode(' ', $content ?? '');
-        foreach ($identifiers as $argumentSource) {
-            if (preg_match('/^[a-z_]+$/', $argumentSource) === false) {
-                throw new InvalidIdentifierException($argumentSource);
-            }
+        if (array_key_exists(0, $identifiers) === false) {
+            throw new InvalidComponentException('Expected one or more identifiers');
         }
 
-        return new self($identifier, $identifiers);
+        return new self($identifiers[0], array_slice($identifiers, 1), $label);
     }
 
     public function getIdentifier(): string

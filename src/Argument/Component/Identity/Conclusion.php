@@ -9,18 +9,21 @@ class Conclusion implements Identity
 {
     public function __construct(
         public readonly string $identifier,
-        public readonly string $label,
+        public readonly string|null $label,
     ) {
     }
 
-    /** @throws InvalidComponentException */
-    public static function fromIdentifierAndContent(string $identifier, ?string $content): self
+    /**
+     * @param list<string> $identifiers
+     * @throws InvalidComponentException
+     */
+    public static function fromSet(array $identifiers, ?string $label): self
     {
-        if (mb_strlen($content ?? '') <= 2 || str_starts_with($content, '"') === false || str_ends_with($content, '"') === false) {
-            throw new InvalidComponentException('Label should start and end with double quotes');
+        if (array_key_exists(0, $identifiers) === false || count($identifiers) !== 1) {
+            throw new InvalidComponentException('Expected exactly one identifier');
         }
 
-        return new self($identifier, $content);
+        return new self($identifiers[0], $label);
     }
 
     public function getIdentifier(): string

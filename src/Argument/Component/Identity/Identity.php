@@ -7,8 +7,11 @@ use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 
 interface Identity
 {
-    /** @throws InvalidComponentException */
-    public static function fromIdentifierAndContent(string $identifier, ?string $content): self;
+    /**
+     * @param list<string> $identifiers
+     * @throws InvalidComponentException
+     */
+    public static function fromSet(array $identifiers, ?string $label): self;
 
     public function getIdentifier(): string;
 }

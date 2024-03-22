@@ -8,9 +8,12 @@ use PrinsFrank\ADLParser\Argument\Component\Modifier\Modifier;
 use PrinsFrank\ADLParser\Argument\ComponentSet;
 use PrinsFrank\ADLParser\Argument\ComponentProvider\ComponentProvider;
 use PrinsFrank\ADLParser\Argument\ComponentProvider\NativeComponentProvider;
+use PrinsFrank\ADLParser\Context\ParserContext;
 use PrinsFrank\ADLParser\Exception\DuplicateDefinitionException;
+use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 use PrinsFrank\ADLParser\Exception\InvalidFileException;
 use PrinsFrank\ADLParser\Exception\InvalidIdentifierException;
+use Throwable;
 
 class Parser
 {
@@ -25,6 +28,7 @@ class Parser
      * @throws InvalidFileException
      * @throws InvalidIdentifierException
      * @throws DuplicateDefinitionException
+     * @throws InvalidComponentException
      */
     public function parse(string $path): ComponentSet
     {
@@ -41,23 +45,59 @@ class Parser
                 continue;
             }
 
-            $firstSpacePos = mb_strpos($line, ' ');
-            if ($firstSpacePos === false || $firstSpacePos === 0) {
-                throw new InvalidFileException($lineNo . ': Each line should start with an identifier followed by a space or a "#" for a comment.');
+            $buffer = ''; $keyword = $label = null; $identifiers = []; $context = ParserContext::None;
+            for ($i = 0; $i < ($characters ??= mb_strlen($line)); $i++) {
+                $char = mb_substr($line, $i, 1);
+                if ($context === ParserContext::None) {
+                    $context = ParserContext::Keyword;
+                    $buffer .= $char;
+                } elseif ($context === ParserContext::Keyword) {
+                    if ($char === ' ') {
+                        $context = ParserContext::Separator;
+                        $keyword = $buffer;
+                        $buffer = '';
+                    } else {
+                        $buffer .= $char;
+                    }
+                } elseif ($context === ParserContext::Separator) {
+                    if ($char === '"') {
+                        $context = ParserContext::Label;
+                    } elseif ($char !== ' ') {
+                        $context = ParserContext::Identifier;
+                        $buffer .= $char;
+                    }
+                } elseif ($context === ParserContext::Identifier) {
+                    if ($char === ' ') {
+                        $context = ParserContext::Separator;
+                        $identifiers[] = $buffer;
+                        $buffer = '';
+                    } else {
+                        $buffer .= $char;
+                    }
+                } elseif ($context === ParserContext::Label) {
+                    if ($char === '"') {
+                        $context = ParserContext::End;
+                        $label = $buffer;
+                        $buffer = '';
+                    }
+                } else {
+                    throw new InvalidComponentException('Unexpected character "' . $char . '" on line ' . $lineNo . ':' . $i . ' in context "' . $context->name . '"');
+                }
             }
 
-            $keyword = mb_substr($line, 0, $firstSpacePos);
+            match ($context) { // flush remaining buffers
+                ParserContext::Identifier => $identifiers[] = $buffer,
+                default => null,
+            };
+
             /** @var class-string<Identity|Modifier> $componentFQN */
-            $componentFQN = $this->componentProvider->provide()[$keyword] ?? throw new InvalidFileException('keyword "' . $keyword . '" is not supported.');
-            $componentString = mb_substr($line, mb_strlen($keyword) + 1);
-            $componentParts = explode(' ', $componentString, 2);
-            $identifier = $componentParts[0];
-            $content = $componentParts[1] ?? null;
-            if (preg_match('/^[a-z_]{2,}$/', $identifier) === false) {
-                throw new InvalidIdentifierException($identifier);
+            $componentFQN = $this->componentProvider->provide()[$keyword] ?? throw new InvalidComponentException('Component with keyword "' . $keyword . '" doesn\'t exist');
+            try {
+                $component = $componentFQN::fromSet($identifiers, $label);
+            } catch (Throwable $e) {
+                throw new InvalidComponentException('Failed to parse line "' . $lineNo . '" (' . $line . ')', previous: $e);
             }
-
-            $componentSet->addComponent($componentFQN::fromIdentifierAndContent($identifier, $content));
+            $componentSet->addComponent($component);
         }
 
         fclose($resource);
