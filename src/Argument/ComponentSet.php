@@ -6,6 +6,7 @@ namespace PrinsFrank\ADLParser\Argument;
 use PrinsFrank\ADLParser\Argument\Component\Identity\Identity;
 use PrinsFrank\ADLParser\Argument\Component\Modifier\Modifier;
 use PrinsFrank\ADLParser\Exception\DuplicateDefinitionException;
+use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 
 class ComponentSet
 {
@@ -45,5 +46,22 @@ class ComponentSet
     public function getModifiers(string $identifier): array
     {
         return $this->modifiers[$identifier] ?? [];
+    }
+
+    /** @throws InvalidComponentException */
+    public function validate(): void
+    {
+        foreach ($this->modifiers as $identifier => $modifiers) {
+            foreach ($modifiers as $modifier) {
+                $identity = $this->getIdentity($identifier);
+                if ($identity === null) {
+                    throw new InvalidComponentException(sprintf('Modifier %s for non existing identity %s', $modifier->getIdentifier(), $identifier));
+                }
+
+                if ($modifier->appliesTo($identity) === false) {
+                    throw new InvalidComponentException(sprintf('Modifier %s can\'t be applied to identity of type %s', $modifier->getIdentifier(), $identity::class));
+                }
+            }
+        }
     }
 }

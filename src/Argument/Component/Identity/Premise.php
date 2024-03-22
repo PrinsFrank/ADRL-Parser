@@ -30,4 +30,9 @@ class Premise implements Identity
     {
         return $this->identifier;
     }
+
+    public function __toString()
+    {
+        return 'premise ' . $this->identifier . ($this->label !== null ? ' ' . $this->label : '');
+    }
 }

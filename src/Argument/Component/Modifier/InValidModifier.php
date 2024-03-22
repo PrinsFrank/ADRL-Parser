@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace PrinsFrank\ADLParser\Argument\Component\Modifier;
 
+use PrinsFrank\ADLParser\Argument\Component\Identity\Conclusion;
+use PrinsFrank\ADLParser\Argument\Component\Identity\Identity;
 use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 
-class Sound implements Modifier
+class InValidModifier implements Modifier
 {
     public function __construct(
         public readonly string $identifier,
@@ -29,5 +31,15 @@ class Sound implements Modifier
     public function getIdentifier(): string
     {
         return $this->identifier;
+    }
+
+    public function appliesTo(Identity $identity): bool
+    {
+        return $identity::class === Conclusion::class;
+    }
+
+    public function __toString(): string
+    {
+        return 'invalid ' . $this->identifier . ($this->label !== null ? ' ' . $this->label : '');
     }
 }

@@ -6,8 +6,8 @@ namespace PrinsFrank\ADLParser\Tests\Unit\Argument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use PrinsFrank\ADLParser\Argument\Component\Identity\Premise;
-use PrinsFrank\ADLParser\Argument\Component\Modifier\Sound;
-use PrinsFrank\ADLParser\Argument\Component\Modifier\Valid;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\TrueModifier;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\ValidModifier;
 use PrinsFrank\ADLParser\Argument\ComponentSet;
 use PrinsFrank\ADLParser\Exception\DuplicateDefinitionException;
 
@@ -40,13 +40,13 @@ class ComponentSetTest extends TestCase
         $componentSet = new ComponentSet('');
         static::assertSame([], $componentSet->getModifiers('bop'));
 
-        $validFoo = new Valid('foo', null);
+        $validFoo = new ValidModifier('foo', null);
         $componentSet->addComponent($validFoo);
         static::assertSame([$validFoo], $componentSet->getModifiers('foo'));
 
-        $validBar = new Valid('bar', null);
+        $validBar = new ValidModifier('bar', null);
         $componentSet->addComponent($validBar);
-        $soundBar = new Sound('bar', null);
+        $soundBar = new TrueModifier('bar', null);
         $componentSet->addComponent($soundBar);
         static::assertSame([$validBar, $soundBar], $componentSet->getModifiers('bar'));
     }

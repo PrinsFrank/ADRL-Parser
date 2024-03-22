@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace PrinsFrank\ADLParser\Argument\Component\Modifier;
 
+use PrinsFrank\ADLParser\Argument\Component\Identity\Identity;
+use PrinsFrank\ADLParser\Argument\Component\Identity\Premise;
 use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 
-class UnSound implements Modifier
+class FalseModifier implements Modifier
 {
     public function __construct(
         public readonly string $identifier,
@@ -29,5 +31,15 @@ class UnSound implements Modifier
     public function getIdentifier(): string
     {
         return $this->identifier;
+    }
+
+    public function appliesTo(Identity $identity): bool
+    {
+        return $identity::class === Premise::class;
+    }
+
+    public function __toString(): string
+    {
+        return 'false ' . $this->identifier . ($this->label !== null ? ' ' . $this->label : '');
     }
 }
