@@ -16,7 +16,7 @@ class Premise implements Identity
     /** @throws InvalidComponentException */
     public static function fromIdentifierAndContent(string $identifier, ?string $content): self
     {
-        if (strlen($content ?? '') <= 2 || str_starts_with($content, '"') === false || str_ends_with($content, '"') === false) {
+        if (mb_strlen($content ?? '') <= 2 || str_starts_with($content, '"') === false || str_ends_with($content, '"') === false) {
             throw new InvalidComponentException('Label should start and end with double quotes');
         }
 

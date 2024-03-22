@@ -41,15 +41,15 @@ class Parser
                 continue;
             }
 
-            $firstSpacePos = strpos($line, ' ');
+            $firstSpacePos = mb_strpos($line, ' ');
             if ($firstSpacePos === false || $firstSpacePos === 0) {
                 throw new InvalidFileException($lineNo . ': Each line should start with an identifier followed by a space or a "#" for a comment.');
             }
 
-            $keyword = substr($line, 0, $firstSpacePos);
+            $keyword = mb_substr($line, 0, $firstSpacePos);
             /** @var class-string<Identity|Modifier> $componentFQN */
             $componentFQN = $this->componentProvider->provide()[$keyword] ?? throw new InvalidFileException('keyword "' . $keyword . '" is not supported.');
-            $componentString = substr($line, strlen($keyword) + 1);
+            $componentString = mb_substr($line, mb_strlen($keyword) + 1);
             $componentParts = explode(' ', $componentString, 2);
             $identifier = $componentParts[0];
             $content = $componentParts[1] ?? null;
