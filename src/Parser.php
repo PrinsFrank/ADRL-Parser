@@ -81,6 +81,8 @@ class Parser
                         $context = ParserContext::End;
                         $label = $buffer;
                         $buffer = '';
+                    } else {
+                        $buffer .= $char;
                     }
                 } else {
                     throw new InvalidComponentException('Unexpected character "' . $char . '" on line ' . $lineNo . ':' . $i . ' in context "' . $context->name . '"');
