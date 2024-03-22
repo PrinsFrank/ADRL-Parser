@@ -105,6 +105,7 @@ class Parser
         }
 
         fclose($resource);
+        $componentSet->validate();
         return $componentSet;
     }
 }
