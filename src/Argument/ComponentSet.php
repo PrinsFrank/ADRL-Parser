@@ -3,8 +3,14 @@ declare(strict_types=1);
 
 namespace PrinsFrank\ADLParser\Argument;
 
+use PrinsFrank\ADLParser\Argument\Component\Identity\Conclusion;
 use PrinsFrank\ADLParser\Argument\Component\Identity\Identity;
+use PrinsFrank\ADLParser\Argument\Component\Identity\Premise;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\FalseModifier;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\InValidModifier;
 use PrinsFrank\ADLParser\Argument\Component\Modifier\Modifier;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\TrueModifier;
+use PrinsFrank\ADLParser\Argument\Component\Modifier\ValidModifier;
 use PrinsFrank\ADLParser\Exception\DuplicateDefinitionException;
 use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 
@@ -63,5 +69,46 @@ class ComponentSet
                 }
             }
         }
+    }
+
+    public function getPromiseState(Premise $identity): bool|null
+    {
+        $canBeTrue = null;
+        foreach ($this->getModifiers($identity->identifier) as $modifier) {
+            if ($modifier instanceof FalseModifier) {
+                return false;
+            }
+
+            if ($modifier instanceof TrueModifier) {
+                $canBeTrue = true;
+            }
+        }
+
+        return $canBeTrue;
+    }
+
+    public function getConclusionState(Conclusion $identity): bool|null
+    {
+        foreach ($this->getModifiers($identity->identifier) as $modifier) {
+            if ($modifier instanceof InValidModifier) {
+                return false;
+            }
+        }
+
+        $states = [];
+        foreach ($identity->identifiers as $identifier) {
+            $referencedIdentifier = $this->getIdentity($identifier);
+            if ($referencedIdentifier instanceof Premise) {
+                $states[] = $this->getPromiseState($referencedIdentifier);
+            } elseif ($referencedIdentifier instanceof Conclusion) {
+                $states[] = $this->getConclusionState($referencedIdentifier);
+            }
+        }
+
+        if (in_array(false, $states, true) === true) {
+            return false;
+        }
+
+        return in_array(null, $states, true) ? null : true;
     }
 }
