@@ -54,6 +54,17 @@ class ComponentSet
         return $this->modifiers[$identifier] ?? [];
     }
 
+    public function hasModifierOfType(string $identifier, string $fqn): bool
+    {
+        foreach ($this->modifiers[$identifier] ?? [] as $modifier) {
+            if (is_a($modifier, $fqn, true) === true) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /** @throws InvalidComponentException */
     public function validate(): void
     {
