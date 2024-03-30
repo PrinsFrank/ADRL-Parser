@@ -10,7 +10,6 @@ use PrinsFrank\ADLParser\Argument\Component\Modifier\FalseModifier;
 use PrinsFrank\ADLParser\Argument\Component\Modifier\InValidModifier;
 use PrinsFrank\ADLParser\Argument\Component\Modifier\Modifier;
 use PrinsFrank\ADLParser\Argument\Component\Modifier\TrueModifier;
-use PrinsFrank\ADLParser\Argument\Component\Modifier\ValidModifier;
 use PrinsFrank\ADLParser\Exception\DuplicateDefinitionException;
 use PrinsFrank\ADLParser\Exception\InvalidComponentException;
 
@@ -82,7 +81,7 @@ class ComponentSet
         }
     }
 
-    public function getPromiseState(Premise $identity): bool|null
+    public function getPremiseState(Premise $identity): bool|null
     {
         $canBeTrue = null;
         foreach ($this->getModifiers($identity->identifier) as $modifier) {
@@ -110,7 +109,7 @@ class ComponentSet
         foreach ($identity->identifiers as $identifier) {
             $referencedIdentifier = $this->getIdentity($identifier);
             if ($referencedIdentifier instanceof Premise) {
-                $states[] = $this->getPromiseState($referencedIdentifier);
+                $states[] = $this->getPremiseState($referencedIdentifier);
             } elseif ($referencedIdentifier instanceof Conclusion) {
                 $states[] = $this->getConclusionState($referencedIdentifier);
             }
