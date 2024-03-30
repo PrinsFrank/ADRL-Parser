@@ -23,7 +23,7 @@
         "phpstan/phpstan-strict-rules": "^1.5"
     },
     "scripts": {
-        "cs": "php-cs-fixer fix --allow-risky=yes --dry-run",
+        "cs": "php-cs-fixer fix --allow-risky=yes --dry-run --diff",
         "cs:fix": "php-cs-fixer fix --allow-risky=yes",
         "stan": "phpstan analyse --memory-limit 4G",
         "unit": "phpunit --testsuite=Unit",
